@@ -39,6 +39,11 @@ class ScanRepositoryImpl implements ScanRepository {
     String localImagePath = '';
     if (croppedImageBase64.isNotEmpty) {
       try {
+        // Remove data URI scheme if present (e.g., "data:image/jpeg;base64,")
+        if (croppedImageBase64.contains(',')) {
+          croppedImageBase64 = croppedImageBase64.split(',').last;
+        }
+        
         final bytes = base64Decode(croppedImageBase64);
         final directory = await getApplicationDocumentsDirectory();
         final fileName = '${uuid.v4()}.jpg';
@@ -59,13 +64,20 @@ class ScanRepositoryImpl implements ScanRepository {
       throw Exception('Invalid response: Data is null');
     }
 
+    print('Available keys in data: ${data.keys.toList()}');
+    print('Full data object: $data');
+
+    // Handle nested nutrition_data if present
+    final nutritionData = data['nutrition_data'] ?? data;
+    print('Using nutrition data source: $nutritionData');
+
     final nutrition = NutritionModel(
-      energy: _parseValue(data, ['energy', 'Energi Total', 'energi_total']),
-      fat: _parseValue(data, ['fat', 'Lemak Total', 'lemak_total']),
-      protein: _parseValue(data, ['protein', 'Protein']),
-      carbs: _parseValue(data, ['carbs', 'Karbohidrat Total', 'karbohidrat_total']),
-      sugar: _parseValue(data, ['sugar', 'Gula Total', 'gula_total']),
-      salt: _parseValue(data, ['salt', 'Garam', 'garam']),
+      energy: _parseValue(nutritionData, ['energy', 'Energi Total', 'energi_total', 'energi']),
+      fat: _parseValue(nutritionData, ['fat', 'Lemak Total', 'lemak_total', 'lemak']),
+      protein: _parseValue(nutritionData, ['protein', 'Protein']),
+      carbs: _parseValue(nutritionData, ['carbs', 'Karbohidrat Total', 'karbohidrat_total', 'karbohidrat']),
+      sugar: _parseValue(nutritionData, ['sugar', 'Gula Total', 'gula_total', 'gula']),
+      salt: _parseValue(nutritionData, ['salt', 'Garam', 'garam']),
     );
     
     print('Parsed Nutrition: ${nutrition.energy}, ${nutrition.fat}, ${nutrition.protein}');
