@@ -28,6 +28,7 @@ class DatabaseHelper {
     await db.execute('''
 CREATE TABLE scans ( 
   id $idType, 
+  name $textType,
   imagePath $textType,
   timestamp $textType,
   energy $textType,

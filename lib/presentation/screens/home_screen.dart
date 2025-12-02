@@ -168,17 +168,37 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                   ),
                   title: Text(
-                    DateFormat('dd MMM yyyy, HH:mm').format(scan.timestamp),
+                    scan.name,
                     style: Theme.of(context).textTheme.titleMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: Text(
-                    '${scan.nutrition.energy} | ${scan.nutrition.protein}',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DateFormat('dd MMM yyyy, HH:mm').format(scan.timestamp),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        '${scan.nutrition.energy} | ${scan.nutrition.protein}',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete_outline),
                     onPressed: () => provider.deleteScan(scan.id),
                   ),
+                  onTap: () {
+                    provider.setCurrentResult(scan);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ResultScreen(),
+                      ),
+                    );
+                  },
                 ),
               );
             },

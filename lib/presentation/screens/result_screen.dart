@@ -42,13 +42,46 @@ class ResultScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             
-            // Edit Title Button (Optional)
+            // Edit Title Button
             TextButton.icon(
               onPressed: () {
-                // Optional: Implement rename
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    final controller = TextEditingController(text: result.name);
+                    return AlertDialog(
+                      title: const Text('Ubah Nama'),
+                      content: TextField(
+                        controller: controller,
+                        decoration: const InputDecoration(
+                          hintText: 'Masukkan nama baru',
+                        ),
+                        autofocus: true,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Batal'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            if (controller.text.isNotEmpty) {
+                              provider.updateScanName(controller.text);
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: const Text('Simpan'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
               icon: const Icon(Icons.edit),
-              label: const Text('klik untuk menamai...'),
+              label: Text(
+                result.name.isEmpty ? 'klik untuk menamai...' : result.name,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).primaryColor,
               ),

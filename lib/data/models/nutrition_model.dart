@@ -43,11 +43,13 @@ class NutritionModel extends Nutrition {
 class ScanResultModel extends ScanResult {
   ScanResultModel({
     required String id,
+    required String name,
     required String imagePath,
     required DateTime timestamp,
     required NutritionModel nutrition,
   }) : super(
           id: id,
+          name: name,
           imagePath: imagePath,
           timestamp: timestamp,
           nutrition: nutrition,
@@ -56,6 +58,7 @@ class ScanResultModel extends ScanResult {
   factory ScanResultModel.fromMap(Map<String, dynamic> map) {
     return ScanResultModel(
       id: map['id'],
+      name: map['name'] ?? 'Scan ${map['timestamp']}', // Default name if null
       imagePath: map['imagePath'],
       timestamp: DateTime.parse(map['timestamp']),
       nutrition: NutritionModel(
@@ -72,6 +75,7 @@ class ScanResultModel extends ScanResult {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'name': name,
       'imagePath': imagePath,
       'timestamp': timestamp.toIso8601String(),
       'energy': nutrition.energy,

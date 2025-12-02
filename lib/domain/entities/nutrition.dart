@@ -18,12 +18,14 @@ class Nutrition {
 
 class ScanResult {
   final String id;
+  final String name;
   final String imagePath; // Local path to cropped image
   final DateTime timestamp;
   final Nutrition nutrition;
 
   ScanResult({
     required this.id,
+    required this.name,
     required this.imagePath,
     required this.timestamp,
     required this.nutrition,

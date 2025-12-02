@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../../domain/entities/nutrition.dart';
 import '../../domain/repositories/scan_repository.dart';
@@ -29,33 +32,64 @@ class ScanRepositoryImpl implements ScanRepository {
     print('Parsed data object: $data');
     
     // Check for base64 image
-    final croppedImageUrl = response['cropped_image_base64'] ?? 
+    String croppedImageBase64 = response['cropped_image_base64'] ?? 
                            data['cropped_image_base64'] ?? 
-                           response['cropped_image_url'] ?? 
-                           data['cropped_image_url'] ?? 
                            '';
+    
+    String localImagePath = '';
+    if (croppedImageBase64.isNotEmpty) {
+      try {
+        final bytes = base64Decode(croppedImageBase64);
+        final directory = await getApplicationDocumentsDirectory();
+        final fileName = '${uuid.v4()}.jpg';
+        final file = File('${directory.path}/$fileName');
+        await file.writeAsBytes(bytes);
+        localImagePath = file.path;
+      } catch (e) {
+        print('Error saving image: $e');
+      }
+    } else {
+       // Fallback for URL if needed, or keep empty
+       localImagePath = response['cropped_image_url'] ?? 
+                        data['cropped_image_url'] ?? 
+                        '';
+    }
 
     if (data == null) {
       throw Exception('Invalid response: Data is null');
     }
 
     final nutrition = NutritionModel(
-      energy: data['energy']?.toString() ?? '0',
-      fat: data['fat']?.toString() ?? '0',
-      protein: data['protein']?.toString() ?? '0',
-      carbs: data['carbs']?.toString() ?? '0',
-      sugar: data['sugar']?.toString() ?? '0',
-      salt: data['salt']?.toString() ?? '0',
+      energy: _parseValue(data, ['energy', 'Energi Total', 'energi_total']),
+      fat: _parseValue(data, ['fat', 'Lemak Total', 'lemak_total']),
+      protein: _parseValue(data, ['protein', 'Protein']),
+      carbs: _parseValue(data, ['carbs', 'Karbohidrat Total', 'karbohidrat_total']),
+      sugar: _parseValue(data, ['sugar', 'Gula Total', 'gula_total']),
+      salt: _parseValue(data, ['salt', 'Garam', 'garam']),
     );
+    
+    print('Parsed Nutrition: ${nutrition.energy}, ${nutrition.fat}, ${nutrition.protein}');
 
-    // We create a temporary ScanResult. ID will be generated when saving?
-    // Or we generate it now. Let's generate now.
+    final timestamp = DateTime.now();
     return ScanResultModel(
       id: uuid.v4(),
-      imagePath: croppedImageUrl, // This is a URL in the mock
-      timestamp: DateTime.now(),
+      name: 'Scan ${DateFormat('dd/MM/yyyy HH:mm').format(timestamp)}',
+      imagePath: localImagePath,
+      timestamp: timestamp,
       nutrition: nutrition,
     );
+  }
+
+  String _parseValue(Map<String, dynamic> data, List<String> keys) {
+    for (final key in keys) {
+      if (data.containsKey(key)) {
+        final value = data[key];
+        if (value != null) {
+          return value.toString();
+        }
+      }
+    }
+    return '0';
   }
 
   @override
@@ -63,6 +97,7 @@ class ScanRepositoryImpl implements ScanRepository {
     // Convert Entity to Model to save
     final model = ScanResultModel(
       id: scanResult.id,
+      name: scanResult.name,
       imagePath: scanResult.imagePath,
       timestamp: scanResult.timestamp,
       nutrition: NutritionModel(
