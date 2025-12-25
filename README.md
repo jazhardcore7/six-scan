@@ -64,6 +64,12 @@ Six Scan is a mobile application designed to help users make healthier food choi
 | ![Home](docs/screenshots/home.png) | ![Scan](docs/screenshots/scan.png) | ![Result](docs/screenshots/result.png) | ![History](docs/screenshots/history.png) |
 
 
-## 🤝 Contributing
+## 👨‍💻 Creator
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+This app is created for **Skripsi** purpose with the title:
+**"Deteksi dan Ekstraksi Informasi Nilai Gizi pada Kemasan Makanan Menggunakan YOLOv11"**
+
+**Creator Information:**
+-   **Name:** Ahmad Bintara Mansur
+-   **NIM:** 09021282227041
+-   **Major:** S1 Informatika
