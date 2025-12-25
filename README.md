@@ -63,7 +63,6 @@ Six Scan is a mobile application designed to help users make healthier food choi
 |:-----------:|:-----------:|:--------------:|:-------:|
 | ![Home](docs/screenshots/home.png) | ![Scan](docs/screenshots/scan.png) | ![Result](docs/screenshots/result.png) | ![History](docs/screenshots/history.png) |
 
-*(Note: Add actual screenshots to a `docs/screenshots` folder in your repo to populate this table)*
 
 ## 🤝 Contributing
 
