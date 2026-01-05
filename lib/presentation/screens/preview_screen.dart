@@ -49,9 +49,25 @@ class _PreviewScreenState extends State<PreviewScreen> {
     Navigator.pop(context);
 
     if (provider.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${provider.error}')),
-      );
+      if (provider.error!.contains('No nutrition label detected')) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Gagal Memproses'),
+            content: const Text('Gambar tidak valid / tidak ada tabel gizi'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${provider.error}')),
+        );
+      }
     } else {
       Navigator.pushReplacement(
         context,

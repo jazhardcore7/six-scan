@@ -7,7 +7,9 @@ import 'package:uuid/uuid.dart';
 class ApiService {
   final Dio _dio = Dio();
   // Android emulator uses 10.0.2.2 to access host localhost
-  final String _baseUrl = 'http://10.0.2.2:8000'; 
+  // Android emulator uses 10.0.2.2 to access host localhost
+  // For physical device, use the laptop's LAN IP
+  final String _baseUrl = 'http://192.168.1.93:8000'; 
 
   Future<Map<String, dynamic>> predict(File imageFile) async {
     try {
@@ -23,6 +25,11 @@ class ApiService {
       Response response = await _dio.post(
         '$_baseUrl/predict',
         data: formData,
+        options: Options(
+          validateStatus: (status) {
+            return status! < 500; // Allow 404 to be handled manually
+          },
+        ),
       );
 
       print('Response status: ${response.statusCode}');
@@ -30,6 +37,8 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return response.data;
+      } else if (response.statusCode == 404) {
+        throw Exception('No nutrition label detected in the image.');
       } else {
         throw Exception('Failed to predict: ${response.statusMessage}');
       }
