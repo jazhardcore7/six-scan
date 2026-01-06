@@ -5,10 +5,9 @@ Six Scan is a mobile application designed to help users make healthier food choi
 ## 🚀 Features
 
 -   **Smart Scanning**: Capture images of nutrition labels using your device's camera or select from the gallery.
--   **AI-Powered Detection**: Utilizes YOLOv11 for precise object detection to locate nutrition tables.
+-   **AI-Powered Detection**: Utilizes YOLOv11 for precise object detection to locate nutrition table.
 -   **OCR Text Extraction**: Integrates EasyOCR to read and parse text from the cropped labels.
 -   **Nutritional Analysis**: Automatically extracts key values like Sugar, Salt, Fat, Energy, and Protein.
--   **Health Grading**: Provides an instant assessment (e.g., "Healthy", "Moderate", "Unhealthy") based on the scanned data.
 -   **History Tracking**: Saves your scan history locally so you can review past items anytime.
 
 ## 🛠️ Tech Stack
@@ -30,10 +29,11 @@ Six Scan is a mobile application designed to help users make healthier food choi
 
 ## 📦 Getting Started
 
-### Prerequisites
+### Requirements
 -   [Flutter SDK](https://docs.flutter.dev/get-started/install) installed.
 -   Android Studio or VS Code configured for Flutter development.
--   A running instance of the Six Scan Backend (see backend repository for setup).
+-   A running instance of the Six Scan Backend get from [here](https://github.com/jazhardcore7/six-scan-backend).
+
 
 ### Installation
 
@@ -53,6 +53,8 @@ Six Scan is a mobile application designed to help users make healthier food choi
     -   Update the `baseUrl` to point to your backend server (e.g., `http://10.0.2.2:8000` for Android emulator).
 
 4.  **Run the App**
+    -   Connect your Android device or start an Android emulator.
+    -   Run the app using the following command:
     ```bash
     flutter run
     ```
